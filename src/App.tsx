@@ -1,27 +1,125 @@
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Index from "./pages/Index";
-import NotFound from "./pages/NotFound";
 
-const queryClient = new QueryClient();
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { useState } from 'react';
+import AuthPage from './pages/AuthPage';
+import DashboardLayout from './components/layout/DashboardLayout';
+import Dashboard from './pages/Dashboard';
+import Packages from './pages/Packages';
+import Bookings from './pages/Bookings';
+import Calendar from './pages/Calendar';
+import Travelers from './pages/Travelers';
+import Team from './pages/Team';
+import Messages from './pages/Messages';
+import HelpCenter from './pages/HelpCenter';
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
+function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const handleLogin = () => {
+    setIsAuthenticated(true);
+  };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+  };
+
+  return (
+    <Router>
+      <div className="min-h-screen bg-background">
         <Routes>
-          <Route path="/" element={<Index />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
+          <Route 
+            path="/auth" 
+            element={
+              isAuthenticated ? 
+                <Navigate to="/dashboard" replace /> : 
+                <AuthPage onLogin={handleLogin} />
+            } 
+          />
+          <Route
+            path="/dashboard"
+            element={
+              isAuthenticated ? 
+                <DashboardLayout onLogout={handleLogout}>
+                  <Dashboard />
+                </DashboardLayout> : 
+                <Navigate to="/auth" replace />
+            }
+          />
+          <Route
+            path="/packages"
+            element={
+              isAuthenticated ? 
+                <DashboardLayout onLogout={handleLogout}>
+                  <Packages />
+                </DashboardLayout> : 
+                <Navigate to="/auth" replace />
+            }
+          />
+          <Route
+            path="/bookings"
+            element={
+              isAuthenticated ? 
+                <DashboardLayout onLogout={handleLogout}>
+                  <Bookings />
+                </DashboardLayout> : 
+                <Navigate to="/auth" replace />
+            }
+          />
+          <Route
+            path="/calendar"
+            element={
+              isAuthenticated ? 
+                <DashboardLayout onLogout={handleLogout}>
+                  <Calendar />
+                </DashboardLayout> : 
+                <Navigate to="/auth" replace />
+            }
+          />
+          <Route
+            path="/travelers"
+            element={
+              isAuthenticated ? 
+                <DashboardLayout onLogout={handleLogout}>
+                  <Travelers />
+                </DashboardLayout> : 
+                <Navigate to="/auth" replace />
+            }
+          />
+          <Route
+            path="/team"
+            element={
+              isAuthenticated ? 
+                <DashboardLayout onLogout={handleLogout}>
+                  <Team />
+                </DashboardLayout> : 
+                <Navigate to="/auth" replace />
+            }
+          />
+          <Route
+            path="/messages"
+            element={
+              isAuthenticated ? 
+                <DashboardLayout onLogout={handleLogout}>
+                  <Messages />
+                </DashboardLayout> : 
+                <Navigate to="/auth" replace />
+            }
+          />
+          <Route
+            path="/help"
+            element={
+              isAuthenticated ? 
+                <DashboardLayout onLogout={handleLogout}>
+                  <HelpCenter />
+                </DashboardLayout> : 
+                <Navigate to="/auth" replace />
+            }
+          />
+          <Route path="/" element={<Navigate to="/auth" replace />} />
         </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+      </div>
+    </Router>
+  );
+}
 
 export default App;
