@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import {
   Sidebar,
   SidebarContent,
@@ -102,7 +102,7 @@ export function AppSidebar({ onLogout }: AppSidebarProps) {
                     isActive={isActive(item.url)}
                     className="w-full"
                   >
-                    <a href={item.url} className="flex items-center">
+                    <Link to={item.url} className="flex items-center">
                       <item.icon className="w-5 h-5" />
                       {state === 'expanded' && (
                         <>
@@ -114,7 +114,7 @@ export function AppSidebar({ onLogout }: AppSidebarProps) {
                           )}
                         </>
                       )}
-                    </a>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
@@ -158,7 +158,7 @@ export function AppSidebar({ onLogout }: AppSidebarProps) {
                 variant="ghost"
                 className="w-full bg-white/10 hover:bg-white/20 text-white"
               >
-                <a href="/help">Help Center</a>
+                <Link to="/help">Help Center</Link>
               </Button>
             </div>
           </div>
