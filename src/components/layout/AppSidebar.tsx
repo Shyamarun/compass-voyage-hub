@@ -27,6 +27,7 @@ import {
   LogOut,
   Headphones,
   Zap,
+  Plane,
 } from 'lucide-react';
 
 interface AppSidebarProps {
@@ -34,6 +35,7 @@ interface AppSidebarProps {
 }
 
 const menuItems = [
+  { title: 'Initialize Trip', url: '/initialize-trip', icon: Plane, badge: 'New Trip' },
   { title: 'Dashboard', url: '/dashboard', icon: LayoutDashboard },
   { title: 'Packages', url: '/packages', icon: Package, badge: 'New' },
   { title: 'Bookings', url: '/bookings', icon: Calendar },

@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { useState } from 'react';
 import AuthPage from './pages/AuthPage';
 import DashboardLayout from './components/layout/DashboardLayout';
+import InitializeTrip from './pages/InitializeTrip';
 import Dashboard from './pages/Dashboard';
 import Packages from './pages/Packages';
 import Bookings from './pages/Bookings';
@@ -34,6 +35,16 @@ function App() {
                 <Navigate to="/dashboard" replace /> : 
                 <AuthPage onLogin={handleLogin} />
             } 
+          />
+          <Route
+            path="/initialize-trip"
+            element={
+              isAuthenticated ? 
+                <DashboardLayout onLogout={handleLogout}>
+                  <InitializeTrip />
+                </DashboardLayout> : 
+                <Navigate to="/auth" replace />
+            }
           />
           <Route
             path="/dashboard"
