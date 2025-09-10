@@ -28,6 +28,7 @@ import {
   Headphones,
   Zap,
   Plane,
+  FolderOpen,
 } from 'lucide-react';
 
 interface AppSidebarProps {
@@ -36,6 +37,7 @@ interface AppSidebarProps {
 
 const menuItems = [
   { title: 'Initialize Trip', url: '/initialize-trip', icon: Plane, badge: 'New Trip' },
+  { title: 'Manage Trips', url: '/manage-trips', icon: FolderOpen, badge: '12' },
   { title: 'Dashboard', url: '/dashboard', icon: LayoutDashboard },
   { title: 'Packages', url: '/packages', icon: Package, badge: 'New' },
   { title: 'Bookings', url: '/bookings', icon: Calendar },

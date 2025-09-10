@@ -4,6 +4,8 @@ import { useState } from 'react';
 import AuthPage from './pages/AuthPage';
 import DashboardLayout from './components/layout/DashboardLayout';
 import InitializeTrip from './pages/InitializeTrip';
+import ManageTrips from './pages/ManageTrips';
+import TripDetails from './pages/TripDetails';
 import Dashboard from './pages/Dashboard';
 import Packages from './pages/Packages';
 import Bookings from './pages/Bookings';
@@ -42,6 +44,26 @@ function App() {
               isAuthenticated ? 
                 <DashboardLayout onLogout={handleLogout}>
                   <InitializeTrip />
+                </DashboardLayout> : 
+                <Navigate to="/auth" replace />
+            }
+          />
+          <Route
+            path="/manage-trips"
+            element={
+              isAuthenticated ? 
+                <DashboardLayout onLogout={handleLogout}>
+                  <ManageTrips />
+                </DashboardLayout> : 
+                <Navigate to="/auth" replace />
+            }
+          />
+          <Route
+            path="/manage-trips/:tripId"
+            element={
+              isAuthenticated ? 
+                <DashboardLayout onLogout={handleLogout}>
+                  <TripDetails />
                 </DashboardLayout> : 
                 <Navigate to="/auth" replace />
             }
