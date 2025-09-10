@@ -7,6 +7,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { toast } from '@/hooks/use-toast';
 import { 
   ArrowLeft,
   Calendar, 
@@ -21,10 +25,17 @@ import {
   Download,
   CreditCard,
   MapIcon,
-  FileText
+  FileText,
+  Edit2,
+  Plus,
+  Trash2,
+  Filter,
+  Bell,
+  User,
+  DollarSign
 } from 'lucide-react';
 
-// Mock trip data
+// Mock trip data with enhanced payment features
 const mockTripData = {
   'trip-1': {
     id: 'trip-1',
@@ -58,10 +69,91 @@ const mockTripData = {
       { id: 3, sender: 'Tour Guide', message: 'Welcome to your Maldives adventure! Resort transfer has been arranged.', time: '30 minutes ago', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=32&h=32&fit=crop&crop=face' }
     ],
     payments: [
-      { member: 'John Smith', amount: 62500, status: 'paid', date: '2025-01-01' },
-      { member: 'Sarah Johnson', amount: 62500, status: 'paid', date: '2025-01-02' },
-      { member: 'Mike Wilson', amount: 62500, status: 'pending', date: null },
-      { member: 'Emily Davis', amount: 62500, status: 'paid', date: '2025-01-01' }
+      { id: 1, member: 'John Smith', amount: 62500, paid: 62500, balance: 0, status: 'paid', date: '2025-01-01', reminderSent: false },
+      { id: 2, member: 'Sarah Johnson', amount: 62500, paid: 62500, balance: 0, status: 'paid', date: '2025-01-02', reminderSent: false },
+      { id: 3, member: 'Mike Wilson', amount: 62500, paid: 30000, balance: 32500, status: 'partial', date: null, reminderSent: true },
+      { id: 4, member: 'Emily Davis', amount: 62500, paid: 62500, balance: 0, status: 'paid', date: '2025-01-01', reminderSent: false },
+      { id: 5, member: 'Alex Brown', amount: 62500, paid: 0, balance: 62500, status: 'pending', date: null, reminderSent: true }
+    ]
+  },
+  'trip-2': {
+    id: 'trip-2',
+    name: 'Swiss Alpine Adventure',
+    destination: 'Switzerland',
+    startDate: '2025-02-15',
+    endDate: '2025-02-22',
+    participants: 6,
+    status: 'scheduled',
+    budget: 180000,
+    image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=400&fit=crop',
+    description: 'An exhilarating winter adventure in the Swiss Alps with skiing, mountain hiking, and cozy alpine experiences.',
+    members: [
+      { id: 1, name: 'David Wilson', email: 'david@example.com', phone: '+91 98765 43220', avatar: 'https://randomuser.me/api/portraits/men/3.jpg' },
+      { id: 2, name: 'Lisa Chen', email: 'lisa@example.com', phone: '+91 98765 43221', avatar: 'https://randomuser.me/api/portraits/women/3.jpg' },
+      { id: 3, name: 'Mark Taylor', email: 'mark@example.com', phone: '+91 98765 43222', avatar: 'https://randomuser.me/api/portraits/men/4.jpg' },
+      { id: 4, name: 'Anna Schmidt', email: 'anna@example.com', phone: '+91 98765 43223', avatar: 'https://randomuser.me/api/portraits/women/4.jpg' },
+      { id: 5, name: 'Tom Anderson', email: 'tom@example.com', phone: '+91 98765 43224', avatar: 'https://randomuser.me/api/portraits/men/5.jpg' },
+      { id: 6, name: 'Julia Roberts', email: 'julia@example.com', phone: '+91 98765 43225', avatar: 'https://randomuser.me/api/portraits/women/5.jpg' }
+    ],
+    itinerary: [
+      { day: 1, title: 'Arrival in Zurich', activities: ['Airport pickup', 'City tour', 'Swiss cuisine dinner', 'Hotel check-in'] },
+      { day: 2, title: 'Alpine Adventure', activities: ['Cable car to Jungfraujoch', 'Snow activities', 'Mountain restaurant lunch', 'Evening in Interlaken'] },
+      { day: 3, title: 'Skiing Day', activities: ['Ski lessons', 'Alpine skiing', 'Fondue lunch', 'Spa relaxation'] },
+      { day: 4, title: 'Cultural Experience', activities: ['Watch making workshop', 'Chocolate factory tour', 'Traditional Swiss lunch', 'Lake cruise'] },
+      { day: 5, title: 'Mountain Hiking', activities: ['Guided mountain hike', 'Alpine photography', 'Picnic lunch', 'Village exploration'] },
+      { day: 6, title: 'Shopping & Leisure', activities: ['Shopping in Lucerne', 'Chapel Bridge visit', 'Farewell dinner', 'Evening entertainment'] },
+      { day: 7, title: 'Departure', activities: ['Breakfast', 'Last minute shopping', 'Airport transfer', 'Flight departure'] }
+    ],
+    messages: [
+      { id: 1, sender: 'David Wilson', message: 'Can\'t wait for the skiing! Should we rent equipment there?', time: '3 hours ago', avatar: 'https://randomuser.me/api/portraits/men/3.jpg' },
+      { id: 2, sender: 'Lisa Chen', message: 'I\'ve checked the weather - perfect conditions for skiing!', time: '2 hours ago', avatar: 'https://randomuser.me/api/portraits/women/3.jpg' }
+    ],
+    payments: [
+      { id: 1, member: 'David Wilson', amount: 30000, paid: 30000, balance: 0, status: 'paid', date: '2025-01-03', reminderSent: false },
+      { id: 2, member: 'Lisa Chen', amount: 30000, paid: 30000, balance: 0, status: 'paid', date: '2025-01-04', reminderSent: false },
+      { id: 3, member: 'Mark Taylor', amount: 30000, paid: 15000, balance: 15000, status: 'partial', date: null, reminderSent: true },
+      { id: 4, member: 'Anna Schmidt', amount: 30000, paid: 0, balance: 30000, status: 'pending', date: null, reminderSent: false },
+      { id: 5, member: 'Tom Anderson', amount: 30000, paid: 30000, balance: 0, status: 'paid', date: '2025-01-05', reminderSent: false },
+      { id: 6, member: 'Julia Roberts', amount: 30000, paid: 0, balance: 30000, status: 'pending', date: null, reminderSent: true }
+    ]
+  },
+  'trip-4': {
+    id: 'trip-4',
+    name: 'Bali Spiritual Retreat',
+    destination: 'Indonesia',
+    startDate: '2025-01-05',
+    endDate: '2025-01-12',
+    participants: 5,
+    status: 'ongoing',
+    budget: 145000,
+    image: 'https://images.unsplash.com/photo-1537953773345-d172ccf13cf1?w=800&h=400&fit=crop',
+    description: 'A transformative spiritual journey in Bali with yoga, meditation, temple visits, and cultural immersion.',
+    members: [
+      { id: 1, name: 'Maya Patel', email: 'maya@example.com', phone: '+91 98765 43230', avatar: 'https://randomuser.me/api/portraits/women/6.jpg' },
+      { id: 2, name: 'James Lee', email: 'james@example.com', phone: '+91 98765 43231', avatar: 'https://randomuser.me/api/portraits/men/6.jpg' },
+      { id: 3, name: 'Sophie Martin', email: 'sophie@example.com', phone: '+91 98765 43232', avatar: 'https://randomuser.me/api/portraits/women/7.jpg' },
+      { id: 4, name: 'Ryan Cooper', email: 'ryan@example.com', phone: '+91 98765 43233', avatar: 'https://randomuser.me/api/portraits/men/7.jpg' },
+      { id: 5, name: 'Emma Thompson', email: 'emma@example.com', phone: '+91 98765 43234', avatar: 'https://randomuser.me/api/portraits/women/8.jpg' }
+    ],
+    itinerary: [
+      { day: 1, title: 'Arrival & Sacred Welcome', activities: ['Airport pickup', 'Blessing ceremony', 'Organic dinner', 'Meditation introduction'] },
+      { day: 2, title: 'Temple & Tradition', activities: ['Temple sunrise tour', 'Cultural workshop', 'Traditional lunch', 'Yoga session'] },
+      { day: 3, title: 'Nature Immersion', activities: ['Rice terrace walk', 'Waterfall meditation', 'Healthy cooking class', 'Sound healing'] },
+      { day: 4, title: 'Mind & Body', activities: ['Morning yoga', 'Spa treatments', 'Mindfulness workshop', 'Vegetarian feast'] },
+      { day: 5, title: 'Art & Expression', activities: ['Batik painting class', 'Local market visit', 'Art therapy session', 'Cultural performance'] },
+      { day: 6, title: 'Inner Journey', activities: ['Silent meditation retreat', 'Nature walk', 'Reflection journal', 'Sharing circle'] },
+      { day: 7, title: 'Integration & Farewell', activities: ['Final yoga practice', 'Closing ceremony', 'Farewell lunch', 'Departure'] }
+    ],
+    messages: [
+      { id: 1, sender: 'Maya Patel', message: 'The sunrise yoga was incredible! Feeling so peaceful here.', time: '1 hour ago', avatar: 'https://randomuser.me/api/portraits/women/6.jpg' },
+      { id: 2, sender: 'James Lee', message: 'The meditation sessions are really transformative. Loving this experience!', time: '30 minutes ago', avatar: 'https://randomuser.me/api/portraits/men/6.jpg' }
+    ],
+    payments: [
+      { id: 1, member: 'Maya Patel', amount: 29000, paid: 29000, balance: 0, status: 'paid', date: '2024-12-20', reminderSent: false },
+      { id: 2, member: 'James Lee', amount: 29000, paid: 29000, balance: 0, status: 'paid', date: '2024-12-21', reminderSent: false },
+      { id: 3, member: 'Sophie Martin', amount: 29000, paid: 29000, balance: 0, status: 'paid', date: '2024-12-22', reminderSent: false },
+      { id: 4, member: 'Ryan Cooper', amount: 29000, paid: 29000, balance: 0, status: 'paid', date: '2024-12-23', reminderSent: false },
+      { id: 5, member: 'Emma Thompson', amount: 29000, paid: 29000, balance: 0, status: 'paid', date: '2024-12-24', reminderSent: false }
     ]
   }
 };
@@ -70,6 +162,12 @@ export default function TripDetails() {
   const { tripId } = useParams();
   const navigate = useNavigate();
   const [newMessage, setNewMessage] = useState('');
+  const [paymentFilter, setPaymentFilter] = useState('all');
+  const [isEditingMembers, setIsEditingMembers] = useState(false);
+  const [isEditingItinerary, setIsEditingItinerary] = useState(false);
+  const [newMemberName, setNewMemberName] = useState('');
+  const [newMemberEmail, setNewMemberEmail] = useState('');
+  const [newMemberPhone, setNewMemberPhone] = useState('');
 
   const trip = mockTripData[tripId as keyof typeof mockTripData];
 
@@ -96,6 +194,15 @@ export default function TripDetails() {
     }
   };
 
+  const getPaymentStatusColor = (status: string) => {
+    switch (status) {
+      case 'paid': return 'text-green-600 bg-green-50';
+      case 'pending': return 'text-red-600 bg-red-50';
+      case 'partial': return 'text-orange-600 bg-orange-50';
+      default: return 'text-gray-600 bg-gray-50';
+    }
+  };
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       month: 'long',
@@ -117,7 +224,58 @@ export default function TripDetails() {
       // Here you would normally send the message to your backend
       console.log('Sending message:', newMessage);
       setNewMessage('');
+      toast({
+        title: "Message sent",
+        description: "Your message has been sent to all trip members.",
+      });
     }
+  };
+
+  const addMember = () => {
+    if (newMemberName.trim() && newMemberEmail.trim() && newMemberPhone.trim()) {
+      // Here you would normally add the member to your backend
+      console.log('Adding member:', { newMemberName, newMemberEmail, newMemberPhone });
+      setNewMemberName('');
+      setNewMemberEmail('');
+      setNewMemberPhone('');
+      toast({
+        title: "Member added",
+        description: `${newMemberName} has been added to the trip.`,
+      });
+    }
+  };
+
+  const removeMember = (memberId: number) => {
+    // Here you would normally remove the member from your backend
+    console.log('Removing member:', memberId);
+    toast({
+      title: "Member removed",
+      description: "The member has been removed from the trip.",
+    });
+  };
+
+  const sendPaymentReminder = (paymentId: number) => {
+    // Here you would normally send a reminder
+    console.log('Sending payment reminder:', paymentId);
+    toast({
+      title: "Reminder sent",
+      description: "Payment reminder has been sent.",
+    });
+  };
+
+  const updatePaymentStatus = (paymentId: number, status: string) => {
+    // Here you would normally update the payment status
+    console.log('Updating payment status:', paymentId, status);
+    toast({
+      title: "Payment updated",
+      description: "Payment status has been updated.",
+    });
+  };
+
+  const getFilteredPayments = () => {
+    if (!trip) return [];
+    if (paymentFilter === 'all') return trip.payments;
+    return trip.payments.filter(payment => payment.status === paymentFilter);
   };
 
   return (
@@ -216,8 +374,58 @@ export default function TripDetails() {
         <TabsContent value="people" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>Trip Members ({trip.members.length})</CardTitle>
-              <CardDescription>People joining this adventure</CardDescription>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle>Trip Members ({trip.members.length})</CardTitle>
+                  <CardDescription>People joining this adventure</CardDescription>
+                </div>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="outline">
+                      <Plus className="w-4 h-4 mr-2" />
+                      Add Member
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Add New Trip Member</DialogTitle>
+                      <DialogDescription>
+                        Add a new person to join this trip adventure.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                      <div>
+                        <label className="text-sm font-medium">Full Name</label>
+                        <Input
+                          placeholder="Enter full name"
+                          value={newMemberName}
+                          onChange={(e) => setNewMemberName(e.target.value)}
+                        />
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium">Email Address</label>
+                        <Input
+                          placeholder="Enter email address"
+                          type="email"
+                          value={newMemberEmail}
+                          onChange={(e) => setNewMemberEmail(e.target.value)}
+                        />
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium">Phone Number</label>
+                        <Input
+                          placeholder="Enter phone number"
+                          value={newMemberPhone}
+                          onChange={(e) => setNewMemberPhone(e.target.value)}
+                        />
+                      </div>
+                      <Button onClick={addMember} className="w-full">
+                        Add Member
+                      </Button>
+                    </div>
+                  </DialogContent>
+                </Dialog>
+              </div>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -238,6 +446,27 @@ export default function TripDetails() {
                         {member.phone}
                       </div>
                     </div>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button variant="ghost" size="sm" className="text-red-600 hover:text-red-700">
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Remove Member</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Are you sure you want to remove {member.name} from this trip? This action cannot be undone.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction onClick={() => removeMember(member.id)}>
+                            Remove
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
                   </div>
                 ))}
               </div>
@@ -248,8 +477,19 @@ export default function TripDetails() {
         <TabsContent value="itinerary" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>Daily Itinerary</CardTitle>
-              <CardDescription>Day-by-day breakdown of activities</CardDescription>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle>Daily Itinerary</CardTitle>
+                  <CardDescription>Day-by-day breakdown of activities</CardDescription>
+                </div>
+                <Button 
+                  variant="outline" 
+                  onClick={() => setIsEditingItinerary(!isEditingItinerary)}
+                >
+                  <Edit2 className="w-4 h-4 mr-2" />
+                  {isEditingItinerary ? 'Save Changes' : 'Edit Itinerary'}
+                </Button>
+              </div>
             </CardHeader>
             <CardContent>
               <div className="space-y-6">
@@ -326,54 +566,119 @@ export default function TripDetails() {
         <TabsContent value="payments" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>Payment Status</CardTitle>
-              <CardDescription>Track payments from all trip members</CardDescription>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle>Payment Status</CardTitle>
+                  <CardDescription>Track payments from all trip members</CardDescription>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Filter className="w-4 h-4" />
+                  <Select value={paymentFilter} onValueChange={setPaymentFilter}>
+                    <SelectTrigger className="w-32">
+                      <SelectValue placeholder="Filter" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All</SelectItem>
+                      <SelectItem value="paid">Paid</SelectItem>
+                      <SelectItem value="partial">Partial</SelectItem>
+                      <SelectItem value="pending">Pending</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {trip.payments.map((payment, index) => (
-                  <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                    <div>
-                      <h4 className="font-medium text-gray-900">{payment.member}</h4>
-                      <p className="text-sm text-gray-600">{formatCurrency(payment.amount)}</p>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      {payment.status === 'paid' ? (
-                        <div className="flex items-center gap-2">
-                          <CheckCircle className="w-5 h-5 text-green-600" />
-                          <span className="text-sm text-green-600 font-medium">Paid</span>
-                          {payment.date && (
-                            <span className="text-xs text-gray-500">
-                              {new Date(payment.date).toLocaleDateString()}
-                            </span>
-                          )}
+                {getFilteredPayments().map((payment) => (
+                  <div key={payment.id} className="p-4 border rounded-lg">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-3">
+                        <User className="w-5 h-5 text-gray-500" />
+                        <div>
+                          <h4 className="font-medium text-gray-900">{payment.member}</h4>
+                          <div className="flex items-center gap-4 text-sm text-gray-600">
+                            <span>Total: {formatCurrency(payment.amount)}</span>
+                            <span>Paid: {formatCurrency(payment.paid)}</span>
+                            <span className="font-medium text-red-600">Balance: {formatCurrency(payment.balance)}</span>
+                          </div>
                         </div>
-                      ) : (
-                        <div className="flex items-center gap-2">
-                          <Clock className="w-5 h-5 text-orange-600" />
-                          <span className="text-sm text-orange-600 font-medium">Pending</span>
-                        </div>
-                      )}
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Badge className={`px-2 py-1 text-xs font-medium ${getPaymentStatusColor(payment.status)}`}>
+                          {payment.status.charAt(0).toUpperCase() + payment.status.slice(1)}
+                        </Badge>
+                        {payment.status !== 'paid' && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => sendPaymentReminder(payment.id)}
+                            disabled={payment.reminderSent}
+                          >
+                            <Bell className="w-3 h-3 mr-1" />
+                            {payment.reminderSent ? 'Sent' : 'Remind'}
+                          </Button>
+                        )}
+                        <Select onValueChange={(value) => updatePaymentStatus(payment.id, value)}>
+                          <SelectTrigger className="w-28">
+                            <SelectValue placeholder="Update" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="pending">Pending</SelectItem>
+                            <SelectItem value="partial">Partial</SelectItem>
+                            <SelectItem value="paid">Paid</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
                     </div>
+                    {payment.date && (
+                      <div className="text-xs text-gray-500 flex items-center gap-1">
+                        <CheckCircle className="w-3 h-3" />
+                        Paid on {new Date(payment.date).toLocaleDateString()}
+                      </div>
+                    )}
+                    {payment.reminderSent && payment.status !== 'paid' && (
+                      <div className="text-xs text-orange-600 flex items-center gap-1 mt-1">
+                        <Bell className="w-3 h-3" />
+                        Reminder sent
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
-              <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-                <div className="flex justify-between items-center">
-                  <span className="font-medium text-blue-900">Total Trip Cost</span>
-                  <span className="text-lg font-bold text-blue-900">{formatCurrency(trip.budget)}</span>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                <div className="p-4 bg-blue-50 rounded-lg">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-blue-700">Total Budget</p>
+                      <p className="text-lg font-bold text-blue-900">{formatCurrency(trip.budget)}</p>
+                    </div>
+                    <DollarSign className="w-6 h-6 text-blue-600" />
+                  </div>
                 </div>
-                <div className="flex justify-between items-center mt-2">
-                  <span className="text-sm text-blue-700">Amount Collected</span>
-                  <span className="text-sm font-medium text-green-600">
-                    {formatCurrency(trip.payments.filter(p => p.status === 'paid').reduce((sum, p) => sum + p.amount, 0))}
-                  </span>
+                
+                <div className="p-4 bg-green-50 rounded-lg">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-green-700">Collected</p>
+                      <p className="text-lg font-bold text-green-900">
+                        {formatCurrency(trip.payments.reduce((sum, p) => sum + p.paid, 0))}
+                      </p>
+                    </div>
+                    <CheckCircle className="w-6 h-6 text-green-600" />
+                  </div>
                 </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-blue-700">Pending Amount</span>
-                  <span className="text-sm font-medium text-orange-600">
-                    {formatCurrency(trip.payments.filter(p => p.status === 'pending').reduce((sum, p) => sum + p.amount, 0))}
-                  </span>
+                
+                <div className="p-4 bg-red-50 rounded-lg">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-red-700">Outstanding</p>
+                      <p className="text-lg font-bold text-red-900">
+                        {formatCurrency(trip.payments.reduce((sum, p) => sum + p.balance, 0))}
+                      </p>
+                    </div>
+                    <XCircle className="w-6 h-6 text-red-600" />
+                  </div>
                 </div>
               </div>
             </CardContent>

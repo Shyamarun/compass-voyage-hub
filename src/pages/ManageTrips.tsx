@@ -16,7 +16,7 @@ import {
   Trash2
 } from 'lucide-react';
 
-// Mock data for demonstration
+// Mock data for demonstration - Enhanced with more trips
 const mockTrips = {
   scheduled: [
     {
@@ -51,6 +51,28 @@ const mockTrips = {
       status: 'scheduled',
       budget: 320000,
       image: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=400&h=300&fit=crop'
+    },
+    {
+      id: 'trip-7',
+      name: 'African Safari',
+      destination: 'Kenya',
+      startDate: '2025-04-05',
+      endDate: '2025-04-14',
+      participants: 10,
+      status: 'scheduled',
+      budget: 420000,
+      image: 'https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?w=400&h=300&fit=crop'
+    },
+    {
+      id: 'trip-8',
+      name: 'Northern Lights Norway',
+      destination: 'Norway',
+      startDate: '2025-05-01',
+      endDate: '2025-05-08',
+      participants: 6,
+      status: 'scheduled',
+      budget: 280000,
+      image: 'https://images.unsplash.com/photo-1579952363873-27d3bfad9c0d?w=400&h=300&fit=crop'
     }
   ],
   ongoing: [
@@ -64,6 +86,17 @@ const mockTrips = {
       status: 'ongoing',
       budget: 145000,
       image: 'https://images.unsplash.com/photo-1537953773345-d172ccf13cf1?w=400&h=300&fit=crop'
+    },
+    {
+      id: 'trip-9',
+      name: 'Amazon Expedition',
+      destination: 'Brazil',
+      startDate: '2024-12-28',
+      endDate: '2025-01-15',
+      participants: 8,
+      status: 'ongoing',
+      budget: 350000,
+      image: 'https://images.unsplash.com/photo-1544551763-77ef2d0cfc6c?w=400&h=300&fit=crop'
     }
   ],
   completed: [
@@ -88,6 +121,39 @@ const mockTrips = {
       status: 'completed',
       budget: 125000,
       image: 'https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=400&h=300&fit=crop'
+    },
+    {
+      id: 'trip-10',
+      name: 'Patagonia Adventure',
+      destination: 'Argentina & Chile',
+      startDate: '2024-10-15',
+      endDate: '2024-10-25',
+      participants: 9,
+      status: 'completed',
+      budget: 390000,
+      image: 'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=400&h=300&fit=crop'
+    },
+    {
+      id: 'trip-11',
+      name: 'Iceland Ring Road',
+      destination: 'Iceland',
+      startDate: '2024-09-20',
+      endDate: '2024-09-28',
+      participants: 6,
+      status: 'completed',
+      budget: 245000,
+      image: 'https://images.unsplash.com/photo-1539735778557-723d2b45dbf3?w=400&h=300&fit=crop'
+    },
+    {
+      id: 'trip-12',
+      name: 'Australian Outback',
+      destination: 'Australia',
+      startDate: '2024-08-10',
+      endDate: '2024-08-20',
+      participants: 8,
+      status: 'completed',
+      budget: 320000,
+      image: 'https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?w=400&h=300&fit=crop'
     }
   ]
 };
