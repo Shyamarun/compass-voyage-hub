@@ -69,11 +69,11 @@ const mockTripData = {
       { id: 3, sender: 'Tour Guide', message: 'Welcome to your Maldives adventure! Resort transfer has been arranged.', time: '30 minutes ago', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=32&h=32&fit=crop&crop=face' }
     ],
     payments: [
-      { id: 1, member: 'John Smith', amount: 62500, paid: 62500, balance: 0, status: 'paid', date: '2025-01-01', reminderSent: false },
-      { id: 2, member: 'Sarah Johnson', amount: 62500, paid: 62500, balance: 0, status: 'paid', date: '2025-01-02', reminderSent: false },
-      { id: 3, member: 'Mike Wilson', amount: 62500, paid: 30000, balance: 32500, status: 'partial', date: null, reminderSent: true },
-      { id: 4, member: 'Emily Davis', amount: 62500, paid: 62500, balance: 0, status: 'paid', date: '2025-01-01', reminderSent: false },
-      { id: 5, member: 'Alex Brown', amount: 62500, paid: 0, balance: 62500, status: 'pending', date: null, reminderSent: true }
+      { id: 1, member: 'John Smith', amount: 62500, paid: 62500, discount: 0, balance: 0, status: 'paid', date: '2025-01-01', reminderSent: false },
+      { id: 2, member: 'Sarah Johnson', amount: 62500, paid: 62500, discount: 5000, balance: 0, status: 'paid', date: '2025-01-02', reminderSent: false },
+      { id: 3, member: 'Mike Wilson', amount: 62500, paid: 30000, discount: 2500, balance: 30000, status: 'partial', date: null, reminderSent: true },
+      { id: 4, member: 'Emily Davis', amount: 62500, paid: 62500, discount: 0, balance: 0, status: 'paid', date: '2025-01-01', reminderSent: false },
+      { id: 5, member: 'Alex Brown', amount: 62500, paid: 0, discount: 0, balance: 62500, status: 'pending', date: null, reminderSent: true }
     ]
   },
   'trip-2': {
@@ -109,12 +109,12 @@ const mockTripData = {
       { id: 2, sender: 'Lisa Chen', message: 'I\'ve checked the weather - perfect conditions for skiing!', time: '2 hours ago', avatar: 'https://randomuser.me/api/portraits/women/3.jpg' }
     ],
     payments: [
-      { id: 1, member: 'David Wilson', amount: 30000, paid: 30000, balance: 0, status: 'paid', date: '2025-01-03', reminderSent: false },
-      { id: 2, member: 'Lisa Chen', amount: 30000, paid: 30000, balance: 0, status: 'paid', date: '2025-01-04', reminderSent: false },
-      { id: 3, member: 'Mark Taylor', amount: 30000, paid: 15000, balance: 15000, status: 'partial', date: null, reminderSent: true },
-      { id: 4, member: 'Anna Schmidt', amount: 30000, paid: 0, balance: 30000, status: 'pending', date: null, reminderSent: false },
-      { id: 5, member: 'Tom Anderson', amount: 30000, paid: 30000, balance: 0, status: 'paid', date: '2025-01-05', reminderSent: false },
-      { id: 6, member: 'Julia Roberts', amount: 30000, paid: 0, balance: 30000, status: 'pending', date: null, reminderSent: true }
+      { id: 1, member: 'David Wilson', amount: 30000, paid: 30000, discount: 0, balance: 0, status: 'paid', date: '2025-01-03', reminderSent: false },
+      { id: 2, member: 'Lisa Chen', amount: 30000, paid: 30000, discount: 1500, balance: 0, status: 'paid', date: '2025-01-04', reminderSent: false },
+      { id: 3, member: 'Mark Taylor', amount: 30000, paid: 15000, discount: 3000, balance: 12000, status: 'partial', date: null, reminderSent: true },
+      { id: 4, member: 'Anna Schmidt', amount: 30000, paid: 0, discount: 0, balance: 30000, status: 'pending', date: null, reminderSent: false },
+      { id: 5, member: 'Tom Anderson', amount: 30000, paid: 30000, discount: 2000, balance: 0, status: 'paid', date: '2025-01-05', reminderSent: false },
+      { id: 6, member: 'Julia Roberts', amount: 30000, paid: 0, discount: 1000, balance: 29000, status: 'pending', date: null, reminderSent: true }
     ]
   },
   'trip-4': {
@@ -149,11 +149,11 @@ const mockTripData = {
       { id: 2, sender: 'James Lee', message: 'The meditation sessions are really transformative. Loving this experience!', time: '30 minutes ago', avatar: 'https://randomuser.me/api/portraits/men/6.jpg' }
     ],
     payments: [
-      { id: 1, member: 'Maya Patel', amount: 29000, paid: 29000, balance: 0, status: 'paid', date: '2024-12-20', reminderSent: false },
-      { id: 2, member: 'James Lee', amount: 29000, paid: 29000, balance: 0, status: 'paid', date: '2024-12-21', reminderSent: false },
-      { id: 3, member: 'Sophie Martin', amount: 29000, paid: 29000, balance: 0, status: 'paid', date: '2024-12-22', reminderSent: false },
-      { id: 4, member: 'Ryan Cooper', amount: 29000, paid: 29000, balance: 0, status: 'paid', date: '2024-12-23', reminderSent: false },
-      { id: 5, member: 'Emma Thompson', amount: 29000, paid: 29000, balance: 0, status: 'paid', date: '2024-12-24', reminderSent: false }
+      { id: 1, member: 'Maya Patel', amount: 29000, paid: 29000, discount: 1000, balance: 0, status: 'paid', date: '2024-12-20', reminderSent: false },
+      { id: 2, member: 'James Lee', amount: 29000, paid: 29000, discount: 0, balance: 0, status: 'paid', date: '2024-12-21', reminderSent: false },
+      { id: 3, member: 'Sophie Martin', amount: 29000, paid: 29000, discount: 1500, balance: 0, status: 'paid', date: '2024-12-22', reminderSent: false },
+      { id: 4, member: 'Ryan Cooper', amount: 29000, paid: 29000, discount: 500, balance: 0, status: 'paid', date: '2024-12-23', reminderSent: false },
+      { id: 5, member: 'Emma Thompson', amount: 29000, paid: 29000, discount: 2000, balance: 0, status: 'paid', date: '2024-12-24', reminderSent: false }
     ]
   }
 };
@@ -168,6 +168,7 @@ export default function TripDetails() {
   const [newMemberName, setNewMemberName] = useState('');
   const [newMemberEmail, setNewMemberEmail] = useState('');
   const [newMemberPhone, setNewMemberPhone] = useState('');
+  const [editingPayment, setEditingPayment] = useState<number | null>(null);
 
   const trip = mockTripData[tripId as keyof typeof mockTripData];
 
@@ -270,6 +271,16 @@ export default function TripDetails() {
       title: "Payment updated",
       description: "Payment status has been updated.",
     });
+  };
+
+  const updateDiscount = (paymentId: number, discount: number) => {
+    // Here you would normally update the discount in your backend
+    console.log('Updating discount:', paymentId, discount);
+    toast({
+      title: "Discount updated",
+      description: "Discount has been applied successfully.",
+    });
+    setEditingPayment(null);
   };
 
   const getFilteredPayments = () => {
@@ -595,40 +606,100 @@ export default function TripDetails() {
                       <div className="flex items-center gap-3">
                         <User className="w-5 h-5 text-gray-500" />
                         <div>
-                          <h4 className="font-medium text-gray-900">{payment.member}</h4>
-                          <div className="flex items-center gap-4 text-sm text-gray-600">
-                            <span>Total: {formatCurrency(payment.amount)}</span>
-                            <span>Paid: {formatCurrency(payment.paid)}</span>
-                            <span className="font-medium text-red-600">Balance: {formatCurrency(payment.balance)}</span>
-                          </div>
+                           <h4 className="font-medium text-gray-900">{payment.member}</h4>
+                           <div className="flex items-center gap-4 text-sm text-gray-600">
+                             <span>Total: {formatCurrency(payment.amount)}</span>
+                             {payment.discount > 0 && (
+                               <span className="text-green-600">Discount: -{formatCurrency(payment.discount)}</span>
+                             )}
+                             <span>Paid: {formatCurrency(payment.paid)}</span>
+                             <span className="font-medium text-red-600">Balance: {formatCurrency(Math.max(0, payment.amount - payment.discount - payment.paid))}</span>
+                           </div>
                         </div>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <Badge className={`px-2 py-1 text-xs font-medium ${getPaymentStatusColor(payment.status)}`}>
-                          {payment.status.charAt(0).toUpperCase() + payment.status.slice(1)}
-                        </Badge>
-                        {payment.status !== 'paid' && (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => sendPaymentReminder(payment.id)}
-                            disabled={payment.reminderSent}
-                          >
-                            <Bell className="w-3 h-3 mr-1" />
-                            {payment.reminderSent ? 'Sent' : 'Remind'}
-                          </Button>
-                        )}
-                        <Select onValueChange={(value) => updatePaymentStatus(payment.id, value)}>
-                          <SelectTrigger className="w-28">
-                            <SelectValue placeholder="Update" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="pending">Pending</SelectItem>
-                            <SelectItem value="partial">Partial</SelectItem>
-                            <SelectItem value="paid">Paid</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
+                       <div className="flex items-center gap-2">
+                         <Badge className={`px-2 py-1 text-xs font-medium ${getPaymentStatusColor(payment.status)}`}>
+                           {payment.status.charAt(0).toUpperCase() + payment.status.slice(1)}
+                         </Badge>
+                         <Dialog>
+                           <DialogTrigger asChild>
+                             <Button variant="outline" size="sm">
+                               <DollarSign className="w-3 h-3 mr-1" />
+                               Discount
+                             </Button>
+                           </DialogTrigger>
+                           <DialogContent>
+                             <DialogHeader>
+                               <DialogTitle>Apply Discount</DialogTitle>
+                               <DialogDescription>
+                                 Set discount amount for {payment.member}
+                               </DialogDescription>
+                             </DialogHeader>
+                             <div className="space-y-4">
+                               <div>
+                                 <label className="text-sm font-medium">Current Discount</label>
+                                 <p className="text-2xl font-bold text-green-600">{formatCurrency(payment.discount)}</p>
+                               </div>
+                               <div>
+                                 <label className="text-sm font-medium">New Discount Amount</label>
+                                 <Input
+                                   type="number"
+                                   placeholder="Enter discount amount"
+                                   defaultValue={payment.discount}
+                                   onChange={(e) => {
+                                     const discount = parseFloat(e.target.value) || 0;
+                                     // Update discount temporarily for preview
+                                   }}
+                                 />
+                               </div>
+                               <div className="p-3 bg-gray-50 rounded-lg">
+                                 <div className="text-sm space-y-1">
+                                   <div className="flex justify-between">
+                                     <span>Original Amount:</span>
+                                     <span>{formatCurrency(payment.amount)}</span>
+                                   </div>
+                                   <div className="flex justify-between text-green-600">
+                                     <span>Discount:</span>
+                                     <span>-{formatCurrency(payment.discount)}</span>
+                                   </div>
+                                   <div className="flex justify-between">
+                                     <span>Amount Paid:</span>
+                                     <span>{formatCurrency(payment.paid)}</span>
+                                   </div>
+                                   <div className="flex justify-between font-medium border-t pt-1">
+                                     <span>New Balance:</span>
+                                     <span>{formatCurrency(Math.max(0, payment.amount - payment.discount - payment.paid))}</span>
+                                   </div>
+                                 </div>
+                               </div>
+                               <Button onClick={() => updateDiscount(payment.id, payment.discount)} className="w-full">
+                                 Apply Discount
+                               </Button>
+                             </div>
+                           </DialogContent>
+                         </Dialog>
+                         {payment.status !== 'paid' && (
+                           <Button
+                             variant="outline"
+                             size="sm"
+                             onClick={() => sendPaymentReminder(payment.id)}
+                             disabled={payment.reminderSent}
+                           >
+                             <Bell className="w-3 h-3 mr-1" />
+                             {payment.reminderSent ? 'Sent' : 'Remind'}
+                           </Button>
+                         )}
+                         <Select onValueChange={(value) => updatePaymentStatus(payment.id, value)}>
+                           <SelectTrigger className="w-28">
+                             <SelectValue placeholder="Update" />
+                           </SelectTrigger>
+                           <SelectContent>
+                             <SelectItem value="pending">Pending</SelectItem>
+                             <SelectItem value="partial">Partial</SelectItem>
+                             <SelectItem value="paid">Paid</SelectItem>
+                           </SelectContent>
+                         </Select>
+                       </div>
                     </div>
                     {payment.date && (
                       <div className="text-xs text-gray-500 flex items-center gap-1">
@@ -646,7 +717,7 @@ export default function TripDetails() {
                 ))}
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-6">
                 <div className="p-4 bg-blue-50 rounded-lg">
                   <div className="flex items-center justify-between">
                     <div>
@@ -657,29 +728,41 @@ export default function TripDetails() {
                   </div>
                 </div>
                 
-                <div className="p-4 bg-green-50 rounded-lg">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-green-700">Collected</p>
-                      <p className="text-lg font-bold text-green-900">
-                        {formatCurrency(trip.payments.reduce((sum, p) => sum + p.paid, 0))}
-                      </p>
-                    </div>
-                    <CheckCircle className="w-6 h-6 text-green-600" />
-                  </div>
-                </div>
-                
-                <div className="p-4 bg-red-50 rounded-lg">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-red-700">Outstanding</p>
-                      <p className="text-lg font-bold text-red-900">
-                        {formatCurrency(trip.payments.reduce((sum, p) => sum + p.balance, 0))}
-                      </p>
-                    </div>
-                    <XCircle className="w-6 h-6 text-red-600" />
-                  </div>
-                </div>
+                 <div className="p-4 bg-green-50 rounded-lg">
+                   <div className="flex items-center justify-between">
+                     <div>
+                       <p className="text-sm text-green-700">Collected</p>
+                       <p className="text-lg font-bold text-green-900">
+                         {formatCurrency(trip.payments.reduce((sum, p) => sum + p.paid, 0))}
+                       </p>
+                     </div>
+                     <CheckCircle className="w-6 h-6 text-green-600" />
+                   </div>
+                 </div>
+                 
+                 <div className="p-4 bg-orange-50 rounded-lg">
+                   <div className="flex items-center justify-between">
+                     <div>
+                       <p className="text-sm text-orange-700">Total Discounts</p>
+                       <p className="text-lg font-bold text-orange-900">
+                         {formatCurrency(trip.payments.reduce((sum, p) => sum + p.discount, 0))}
+                       </p>
+                     </div>
+                     <DollarSign className="w-6 h-6 text-orange-600" />
+                   </div>
+                 </div>
+                 
+                 <div className="p-4 bg-red-50 rounded-lg">
+                   <div className="flex items-center justify-between">
+                     <div>
+                       <p className="text-sm text-red-700">Outstanding</p>
+                       <p className="text-lg font-bold text-red-900">
+                         {formatCurrency(trip.payments.reduce((sum, p) => sum + Math.max(0, p.amount - p.discount - p.paid), 0))}
+                       </p>
+                     </div>
+                     <XCircle className="w-6 h-6 text-red-600" />
+                   </div>
+                 </div>
               </div>
             </CardContent>
           </Card>
