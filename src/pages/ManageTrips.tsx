@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
 import { 
   Calendar, 
   MapPin, 
@@ -13,8 +15,39 @@ import {
   Search,
   Eye,
   Edit2,
-  Trash2
+  Trash2,
+  CreditCard,
+  Percent,
+  X
 } from 'lucide-react';
+
+// Mock payment data for each trip
+const mockPaymentData = {
+  'trip-1': [
+    { id: 'p1', name: 'John Doe', email: 'john@example.com', amount: 62500, paid: 30000, discount: 0 },
+    { id: 'p2', name: 'Jane Smith', email: 'jane@example.com', amount: 62500, paid: 62500, discount: 0 },
+    { id: 'p3', name: 'Mike Johnson', email: 'mike@example.com', amount: 62500, paid: 20000, discount: 0 },
+    { id: 'p4', name: 'Sarah Wilson', email: 'sarah@example.com', amount: 62500, paid: 0, discount: 0 }
+  ],
+  'trip-2': [
+    { id: 'p5', name: 'Alex Brown', email: 'alex@example.com', amount: 30000, paid: 30000, discount: 0 },
+    { id: 'p6', name: 'Emma Davis', email: 'emma@example.com', amount: 30000, paid: 15000, discount: 0 },
+    { id: 'p7', name: 'Tom Wilson', email: 'tom@example.com', amount: 30000, paid: 0, discount: 0 },
+    { id: 'p8', name: 'Lisa Chen', email: 'lisa@example.com', amount: 30000, paid: 30000, discount: 0 },
+    { id: 'p9', name: 'David Lee', email: 'david@example.com', amount: 30000, paid: 10000, discount: 0 },
+    { id: 'p10', name: 'Amy Taylor', email: 'amy@example.com', amount: 30000, paid: 30000, discount: 0 }
+  ],
+  'trip-3': [
+    { id: 'p11', name: 'Chris Anderson', email: 'chris@example.com', amount: 40000, paid: 20000, discount: 0 },
+    { id: 'p12', name: 'Kelly Martinez', email: 'kelly@example.com', amount: 40000, paid: 40000, discount: 0 },
+    { id: 'p13', name: 'Ryan Garcia', email: 'ryan@example.com', amount: 40000, paid: 0, discount: 0 },
+    { id: 'p14', name: 'Nicole Robinson', email: 'nicole@example.com', amount: 40000, paid: 15000, discount: 0 },
+    { id: 'p15', name: 'Mark Thompson', email: 'mark@example.com', amount: 40000, paid: 40000, discount: 0 },
+    { id: 'p16', name: 'Jessica White', email: 'jessica@example.com', amount: 40000, paid: 25000, discount: 0 },
+    { id: 'p17', name: 'Daniel Harris', email: 'daniel@example.com', amount: 40000, paid: 40000, discount: 0 },
+    { id: 'p18', name: 'Ashley Clark', email: 'ashley@example.com', amount: 40000, paid: 10000, discount: 0 }
+  ]
+};
 
 // Mock data for demonstration - Enhanced with more trips
 const mockTrips = {
@@ -161,6 +194,9 @@ const mockTrips = {
 export default function ManageTrips() {
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTab, setActiveTab] = useState('scheduled');
+  const [paymentData, setPaymentData] = useState(mockPaymentData);
+  const [discountDialogs, setDiscountDialogs] = useState<Record<string, boolean>>({});
+  const [discountInputs, setDiscountInputs] = useState<Record<string, string>>({});
   const navigate = useNavigate();
 
   const getStatusColor = (status: string) => {
@@ -190,6 +226,53 @@ export default function ManageTrips() {
 
   const handleViewTrip = (tripId: string) => {
     navigate(`/manage-trips/${tripId}`);
+  };
+
+  const handleDiscountChange = (tripId: string, participantId: string, discount: number) => {
+    setPaymentData(prev => ({
+      ...prev,
+      [tripId]: prev[tripId]?.map(participant =>
+        participant.id === participantId
+          ? { ...participant, discount }
+          : participant
+      ) || []
+    }));
+  };
+
+  const openDiscountDialog = (tripId: string, participantId: string) => {
+    const key = `${tripId}-${participantId}`;
+    setDiscountDialogs(prev => ({ ...prev, [key]: true }));
+    const currentDiscount = paymentData[tripId]?.find(p => p.id === participantId)?.discount || 0;
+    setDiscountInputs(prev => ({ ...prev, [key]: currentDiscount.toString() }));
+  };
+
+  const closeDiscountDialog = (tripId: string, participantId: string) => {
+    const key = `${tripId}-${participantId}`;
+    setDiscountDialogs(prev => ({ ...prev, [key]: false }));
+  };
+
+  const applyDiscount = (tripId: string, participantId: string) => {
+    const key = `${tripId}-${participantId}`;
+    const discountValue = parseFloat(discountInputs[key] || '0');
+    if (!isNaN(discountValue) && discountValue >= 0) {
+      handleDiscountChange(tripId, participantId, discountValue);
+    }
+    closeDiscountDialog(tripId, participantId);
+  };
+
+  const calculateTotal = (tripId: string) => {
+    const participants = paymentData[tripId] || [];
+    return participants.reduce((sum, p) => sum + (p.amount - p.discount), 0);
+  };
+
+  const calculateTotalPaid = (tripId: string) => {
+    const participants = paymentData[tripId] || [];
+    return participants.reduce((sum, p) => sum + p.paid, 0);
+  };
+
+  const calculateTotalDiscount = (tripId: string) => {
+    const participants = paymentData[tripId] || [];
+    return participants.reduce((sum, p) => sum + p.discount, 0);
   };
 
   const renderTripCard = (trip: any) => (
@@ -222,6 +305,194 @@ export default function ManageTrips() {
             {trip.participants} people
           </div>
         </div>
+        
+        {/* Payment Summary */}
+        {paymentData[trip.id] && (
+          <div className="bg-gray-50 p-3 rounded-lg space-y-2">
+            <div className="flex items-center justify-between text-sm">
+              <span className="font-medium">Payment Status</span>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="outline" size="sm">
+                    <CreditCard className="w-4 h-4 mr-1" />
+                    Details
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+                  <DialogHeader>
+                    <DialogTitle>{trip.name} - Payment Management</DialogTitle>
+                    <DialogDescription>
+                      Manage payments and discounts for all participants
+                    </DialogDescription>
+                  </DialogHeader>
+                  
+                  <div className="space-y-4">
+                    {/* Payment Summary Cards */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <Card>
+                        <CardContent className="p-4">
+                          <div className="text-center">
+                            <p className="text-sm text-gray-600">Total Amount</p>
+                            <p className="text-2xl font-bold">{formatCurrency(calculateTotal(trip.id))}</p>
+                            {calculateTotalDiscount(trip.id) > 0 && (
+                              <p className="text-sm text-green-600">
+                                -{formatCurrency(calculateTotalDiscount(trip.id))} discount
+                              </p>
+                            )}
+                          </div>
+                        </CardContent>
+                      </Card>
+                      <Card>
+                        <CardContent className="p-4">
+                          <div className="text-center">
+                            <p className="text-sm text-gray-600">Amount Paid</p>
+                            <p className="text-2xl font-bold text-green-600">{formatCurrency(calculateTotalPaid(trip.id))}</p>
+                          </div>
+                        </CardContent>
+                      </Card>
+                      <Card>
+                        <CardContent className="p-4">
+                          <div className="text-center">
+                            <p className="text-sm text-gray-600">Remaining</p>
+                            <p className="text-2xl font-bold text-red-600">
+                              {formatCurrency(calculateTotal(trip.id) - calculateTotalPaid(trip.id))}
+                            </p>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </div>
+
+                    {/* Participants List with Discount Options */}
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-semibold">Participants & Payments</h3>
+                      {paymentData[trip.id]?.map((participant) => {
+                        const dialogKey = `${trip.id}-${participant.id}`;
+                        const finalAmount = participant.amount - participant.discount;
+                        const balance = finalAmount - participant.paid;
+                        
+                        return (
+                          <Card key={participant.id} className="p-4">
+                            <div className="flex items-center justify-between">
+                              <div className="flex-1">
+                                <div className="flex items-center gap-4">
+                                  <div>
+                                    <h4 className="font-medium">{participant.name}</h4>
+                                    <p className="text-sm text-gray-600">{participant.email}</p>
+                                  </div>
+                                  
+                                  {participant.discount > 0 && (
+                                    <Badge variant="secondary" className="bg-green-100 text-green-800">
+                                      <Percent className="w-3 h-3 mr-1" />
+                                      {formatCurrency(participant.discount)} off
+                                    </Badge>
+                                  )}
+                                </div>
+                                
+                                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-3 text-sm">
+                                  <div>
+                                    <p className="text-gray-600">Original Amount</p>
+                                    <p className="font-medium">{formatCurrency(participant.amount)}</p>
+                                  </div>
+                                  <div>
+                                    <p className="text-gray-600">Final Amount</p>
+                                    <p className="font-medium">{formatCurrency(finalAmount)}</p>
+                                  </div>
+                                  <div>
+                                    <p className="text-gray-600">Paid</p>
+                                    <p className="font-medium text-green-600">{formatCurrency(participant.paid)}</p>
+                                  </div>
+                                  <div>
+                                    <p className="text-gray-600">Balance</p>
+                                    <p className={`font-medium ${balance > 0 ? 'text-red-600' : 'text-green-600'}`}>
+                                      {formatCurrency(Math.abs(balance))}
+                                    </p>
+                                  </div>
+                                </div>
+                              </div>
+                              
+                              <div className="flex gap-2 ml-4">
+                                <Dialog open={discountDialogs[dialogKey]} onOpenChange={(open) => {
+                                  if (!open) closeDiscountDialog(trip.id, participant.id);
+                                }}>
+                                  <DialogTrigger asChild>
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      onClick={() => openDiscountDialog(trip.id, participant.id)}
+                                    >
+                                      <Percent className="w-4 h-4 mr-1" />
+                                      Discount
+                                    </Button>
+                                  </DialogTrigger>
+                                  <DialogContent className="sm:max-w-md">
+                                    <DialogHeader>
+                                      <DialogTitle>Add Discount</DialogTitle>
+                                      <DialogDescription>
+                                        Set discount amount for {participant.name}
+                                      </DialogDescription>
+                                    </DialogHeader>
+                                    
+                                    <div className="space-y-4">
+                                      <div className="space-y-2">
+                                        <Label htmlFor="discount">Discount Amount (₹)</Label>
+                                        <Input
+                                          id="discount"
+                                          type="number"
+                                          placeholder="0"
+                                          value={discountInputs[dialogKey] || ''}
+                                          onChange={(e) => setDiscountInputs(prev => ({
+                                            ...prev,
+                                            [dialogKey]: e.target.value
+                                          }))}
+                                          min="0"
+                                          max={participant.amount}
+                                        />
+                                        <p className="text-xs text-gray-500">
+                                          Maximum discount: {formatCurrency(participant.amount)}
+                                        </p>
+                                      </div>
+                                      
+                                      <div className="flex justify-end gap-2">
+                                        <Button
+                                          variant="outline"
+                                          onClick={() => closeDiscountDialog(trip.id, participant.id)}
+                                        >
+                                          Cancel
+                                        </Button>
+                                        <Button
+                                          onClick={() => applyDiscount(trip.id, participant.id)}
+                                        >
+                                          Apply Discount
+                                        </Button>
+                                      </div>
+                                    </div>
+                                  </DialogContent>
+                                </Dialog>
+                              </div>
+                            </div>
+                          </Card>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </DialogContent>
+              </Dialog>
+            </div>
+            <div className="grid grid-cols-2 gap-4 text-xs">
+              <div>
+                <span className="text-gray-600">Paid: </span>
+                <span className="font-medium text-green-600">{formatCurrency(calculateTotalPaid(trip.id))}</span>
+              </div>
+              <div>
+                <span className="text-gray-600">Balance: </span>
+                <span className="font-medium text-red-600">
+                  {formatCurrency(calculateTotal(trip.id) - calculateTotalPaid(trip.id))}
+                </span>
+              </div>
+            </div>
+          </div>
+        )}
+        
         <div className="flex items-center justify-between">
           <span className="font-semibold text-lg">{formatCurrency(trip.budget)}</span>
           <div className="flex gap-2">
