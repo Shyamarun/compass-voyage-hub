@@ -152,9 +152,7 @@ export default function Bookings() {
   return <div className="space-y-6">
       {/* Stats Overview */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {stats.map((stat, index) => <Card key={index} className="hover:shadow-md transition-shadow">
-            
-          </Card>)}
+        {stats.map((stat, index) => {})}
       </div>
 
       {/* Header and Filters */}
