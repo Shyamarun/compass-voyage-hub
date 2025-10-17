@@ -152,7 +152,19 @@ export default function Bookings() {
   return <div className="space-y-6">
       {/* Stats Overview */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {stats.map((stat, index) => {})}
+        {stats.map((stat, index) => (
+          <Card key={index}>
+            <CardContent className="pt-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground">{stat.title}</p>
+                  <p className="text-2xl font-bold">{stat.value}</p>
+                </div>
+                <stat.icon className="h-8 w-8 text-primary" />
+              </div>
+            </CardContent>
+          </Card>
+        ))}
       </div>
 
       {/* Header and Filters */}

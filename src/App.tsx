@@ -1,6 +1,7 @@
 
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useState } from 'react';
+import LandingPage from './pages/LandingPage';
 import AuthPage from './pages/AuthPage';
 import DashboardLayout from './components/layout/DashboardLayout';
 import InitializeTrip from './pages/InitializeTrip';
@@ -148,7 +149,7 @@ function App() {
                 <Navigate to="/auth" replace />
             }
           />
-          <Route path="/" element={<Navigate to="/auth" replace />} />
+          <Route path="/" element={<LandingPage />} />
         </Routes>
       </div>
     </Router>
