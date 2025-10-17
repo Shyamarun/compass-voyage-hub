@@ -1,6 +1,7 @@
 
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useState } from 'react';
+import { ThemeProvider } from './contexts/ThemeContext';
 import LandingPage from './pages/LandingPage';
 import AuthPage from './pages/AuthPage';
 import DashboardLayout from './components/layout/DashboardLayout';
@@ -28,9 +29,10 @@ function App() {
   };
 
   return (
-    <Router>
-      <div className="min-h-screen bg-background">
-        <Routes>
+    <ThemeProvider>
+      <Router>
+        <div className="min-h-screen bg-background">
+          <Routes>
           <Route 
             path="/auth" 
             element={
@@ -150,9 +152,10 @@ function App() {
             }
           />
           <Route path="/" element={<LandingPage />} />
-        </Routes>
-      </div>
-    </Router>
+          </Routes>
+        </div>
+      </Router>
+    </ThemeProvider>
   );
 }
 

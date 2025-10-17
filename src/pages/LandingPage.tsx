@@ -1,6 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { Compass, Users, Calendar, TrendingUp, MapPin, Shield } from "lucide-react";
+import { Compass, Users, Calendar, TrendingUp, MapPin, Shield, ChevronDown, Play } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { ThemeSelector } from "@/components/ThemeSelector";
 
 const LandingPage = () => {
   const navigate = useNavigate();
@@ -38,22 +45,70 @@ const LandingPage = () => {
     }
   ];
 
+  const navItems = [
+    {
+      title: "Platform",
+      items: ["Overview", "Features", "Integrations", "Pricing"]
+    },
+    {
+      title: "Solutions",
+      items: ["Travel Agencies", "Tour Operators", "Hotels", "Enterprise"]
+    },
+    {
+      title: "Company",
+      items: ["About Us", "Careers", "Contact", "Press"]
+    },
+    {
+      title: "Resources",
+      items: ["Blog", "Documentation", "Support", "Community"]
+    }
+  ];
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50">
+    <div className="min-h-screen bg-gradient-to-br from-[hsl(var(--hero-gradient-from))] to-[hsl(var(--hero-gradient-to))]">
       {/* Navigation */}
-      <nav className="border-b bg-background/80 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container mx-auto px-6 py-4">
+      <nav className="bg-background/95 backdrop-blur-sm sticky top-0 z-50 border-b border-border/40">
+        <div className="container mx-auto px-6 py-3">
           <div className="flex items-center justify-between">
+            {/* Logo */}
             <div className="flex items-center gap-2">
-              <Compass className="h-8 w-8 text-primary" />
-              <span className="text-2xl font-bold">Compass CRM</span>
+              <Compass className="h-7 w-7 text-foreground" strokeWidth={2.5} />
+              <span className="text-xl font-semibold text-foreground">compass</span>
             </div>
-            <div className="flex items-center gap-4">
-              <Button variant="ghost" onClick={() => navigate('/auth')}>
+
+            {/* Navigation Links */}
+            <div className="hidden md:flex items-center gap-1">
+              {navItems.map((item) => (
+                <DropdownMenu key={item.title}>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="text-foreground hover:text-foreground">
+                      {item.title}
+                      <ChevronDown className="ml-1 h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start" className="bg-background">
+                    {item.items.map((subItem) => (
+                      <DropdownMenuItem key={subItem}>
+                        {subItem}
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ))}
+            </div>
+
+            {/* Right Side Actions */}
+            <div className="flex items-center gap-3">
+              <ThemeSelector />
+              <span className="text-sm text-muted-foreground hidden sm:inline">EN</span>
+              <Button variant="ghost" onClick={() => navigate('/auth')} className="text-foreground">
                 Login
               </Button>
-              <Button onClick={() => navigate('/auth')} className="bg-primary hover:bg-primary/90">
-                Get Started
+              <Button 
+                onClick={() => navigate('/auth')} 
+                className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full px-6"
+              >
+                Contact sales
               </Button>
             </div>
           </div>
@@ -61,62 +116,128 @@ const LandingPage = () => {
       </nav>
 
       {/* Hero Section */}
-      <section className="container mx-auto px-6 py-20 lg:py-32">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+      <section className="container mx-auto px-6 py-16 lg:py-24">
+        <div className="grid lg:grid-cols-2 gap-16 items-center">
           <div className="space-y-8">
-            <h1 className="text-5xl lg:text-6xl font-bold leading-tight">
-              Bringing travel management{" "}
-              <span className="text-primary">insights to light</span>
+            <h1 className="text-6xl lg:text-7xl font-bold leading-[1.1] text-foreground">
+              Bringing<br />
+              travel &<br />
+              hospitality<br />
+              <span className="block mt-1">insights to light</span>
             </h1>
-            <p className="text-xl text-muted-foreground leading-relaxed">
-              Compass CRM is the technology platform that turns travel complexity into streamlined operations. 
-              We give you the power to discover hidden opportunities, manage bookings efficiently, and grow your business faster.
+            <p className="text-lg text-foreground/80 leading-relaxed max-w-lg">
+              Compass is the technology platform that turns data complexity into revenue growth. We give you the power to discover hidden insights, capture missed opportunities, and move faster while working smarter.
             </p>
             <div className="flex flex-wrap gap-4">
               <Button 
                 size="lg" 
                 onClick={() => navigate('/auth')}
-                className="bg-primary hover:bg-primary/90 text-lg px-8"
+                className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full text-base px-8 h-12"
               >
                 Schedule a Demo
               </Button>
               <Button 
                 size="lg" 
-                variant="outline"
-                className="text-lg px-8"
+                variant="ghost"
+                className="text-foreground hover:bg-background/50 rounded-full text-base px-6 h-12 border border-foreground/20"
               >
+                <Play className="h-5 w-5 mr-2" />
                 Watch Video
               </Button>
             </div>
           </div>
           
-          {/* Hero Image Placeholder */}
-          <div className="relative">
-            <div className="bg-gradient-to-br from-primary/20 to-primary/5 rounded-2xl p-8 backdrop-blur-sm border border-primary/20">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="bg-background p-6 rounded-lg shadow-lg">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Calendar className="h-5 w-5 text-primary" />
-                    <span className="font-semibold">Bookings</span>
-                  </div>
-                  <p className="text-3xl font-bold">248</p>
-                  <p className="text-sm text-green-600">+12% vs last month</p>
+          {/* Hero Visual - Analytics Cards */}
+          <div className="relative h-[500px] lg:h-[600px]">
+            {/* Compensation Card */}
+            <div className="absolute top-8 right-0 bg-gradient-to-br from-green-400 to-green-500 rounded-2xl p-4 shadow-xl w-48 animate-float">
+              <div className="text-white">
+                <div className="text-sm mb-1">$259</div>
+                <div className="text-xs opacity-90">-10% vs. Comp</div>
+              </div>
+            </div>
+
+            {/* Date Badges */}
+            <div className="absolute top-32 left-0 bg-blue-500 text-white rounded-full px-4 py-2 shadow-lg text-sm font-medium">
+              9.1
+            </div>
+            <div className="absolute top-64 left-8 bg-red-400 text-white rounded-full px-4 py-2 shadow-lg text-sm font-medium">
+              14
+            </div>
+            <div className="absolute top-80 left-0 bg-orange-400 text-white rounded-full px-4 py-2 shadow-lg text-sm font-medium">
+              23+
+            </div>
+
+            {/* Main Dashboard Card */}
+            <div className="absolute top-20 left-12 right-16 bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl p-6">
+              <div className="grid grid-cols-3 gap-3 mb-4">
+                {[...Array(9)].map((_, i) => (
+                  <div 
+                    key={i} 
+                    className={`aspect-square rounded-lg ${
+                      i % 3 === 0 ? 'bg-blue-400' : 
+                      i % 3 === 1 ? 'bg-orange-300' : 
+                      'bg-blue-200'
+                    }`}
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* Demand Card */}
+            <div className="absolute bottom-32 left-4 bg-white rounded-xl shadow-xl p-4 w-56">
+              <div className="text-sm font-medium text-foreground mb-2">Demand</div>
+              <div className="flex gap-2 text-xs">
+                <div className="flex items-center gap-1">
+                  <div className="w-3 h-3 bg-blue-400 rounded-sm"></div>
+                  <span className="text-muted-foreground">Very high</span>
                 </div>
-                <div className="bg-background p-6 rounded-lg shadow-lg">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Users className="h-5 w-5 text-primary" />
-                    <span className="font-semibold">Travelers</span>
-                  </div>
-                  <p className="text-3xl font-bold">1,847</p>
-                  <p className="text-sm text-green-600">+8% growth</p>
+                <div className="flex items-center gap-1">
+                  <div className="w-3 h-3 bg-blue-200 rounded-sm"></div>
+                  <span className="text-muted-foreground">Low</span>
                 </div>
-                <div className="bg-background p-6 rounded-lg shadow-lg col-span-2">
-                  <div className="flex items-center gap-2 mb-2">
-                    <TrendingUp className="h-5 w-5 text-primary" />
-                    <span className="font-semibold">Revenue</span>
+                <div className="flex items-center gap-1">
+                  <div className="w-3 h-3 bg-orange-300 rounded-sm"></div>
+                  <span className="text-muted-foreground">High</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Performance Card */}
+            <div className="absolute bottom-8 right-0 bg-white rounded-xl shadow-xl p-4 w-52">
+              <div className="relative w-32 h-32 mx-auto mb-3">
+                <svg className="w-full h-full" viewBox="0 0 100 100">
+                  <circle cx="50" cy="50" r="40" fill="none" stroke="#e5e7eb" strokeWidth="8"/>
+                  <circle cx="50" cy="50" r="40" fill="none" stroke="#3b82f6" strokeWidth="8" 
+                    strokeDasharray="251.2" strokeDashoffset="40" className="origin-center -rotate-90"/>
+                </svg>
+                <div className="absolute inset-0 flex items-center justify-center flex-col">
+                  <div className="text-2xl font-bold text-foreground">83%</div>
+                  <div className="text-xs text-muted-foreground">Win + Meet</div>
+                </div>
+              </div>
+              <div className="grid grid-cols-3 gap-2 text-center text-xs">
+                <div>
+                  <div className="font-semibold text-foreground">5.6k</div>
+                  <div className="text-muted-foreground">Hotels</div>
+                </div>
+                <div>
+                  <div className="font-semibold text-foreground">2.3m</div>
+                  <div className="text-muted-foreground">Shops</div>
+                </div>
+                <div className="col-span-3 grid grid-cols-3 gap-1 mt-2 text-xs">
+                  <div>
+                    <div className="font-semibold">17%</div>
+                    <div className="text-muted-foreground">Loss</div>
                   </div>
-                  <p className="text-3xl font-bold">$124,500</p>
-                  <p className="text-sm text-green-600">+23% this quarter</p>
+                  <div>
+                    <div className="font-semibold">68%</div>
+                    <div className="text-muted-foreground">Meet</div>
+                  </div>
+                  <div>
+                    <div className="font-semibold">15%</div>
+                    <div className="text-muted-foreground">Win</div>
+                  </div>
                 </div>
               </div>
             </div>
